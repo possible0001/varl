@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Valentine 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      width: 90%;
+      max-width: 350px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      color: #ff1493;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 8px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #yes {
+      background: #ff1493;
+      color: #fff;
+    }
+
+    #no {
+      background: #ff69b4;
+      color: #fff;
+      position: absolute;
+    }
+
+    #hint {
+      margin-top: 12px;
+      color: red;
+      font-weight: bold;
+      display: none;
+    }
+
+    #musicHint {
+      position: fixed;
+      bottom: 50px;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+      font-size: 14px;
+      display: none;
+    }
+
+    #creator {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      font-size: 16px;
+      color: #fff;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="box" id="box">
+    <h2>Will you be my Valentine? 💖</h2>
+    <button id="yes" onclick="yesClick()">Yes 😍</button>
+    <button id="no" onmouseover="moveNo()">No 😏</button>
+    <p id="hint">😂 Abeg just click YES</p>
+  </div>
+
+  <!-- Hint for stopping music -->
+  <div id="musicHint">💡 Tap anywhere outside the box to stop the music</div>
+
+  <!-- Music -->
+  <audio id="song" preload="auto">
+    <source src="allthestars.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Creator -->
+  <div id="creator">Created by Possible</div>
+
+  <script>
+    const herName = "Dorcas ❤️";
+    let chaseCount = 0;
+    let forced = false;
+
+    function moveNo() {
+      chaseCount++;
+      const noBtn = document.getElementById("no");
+      const box = document.querySelector(".box");
+
+      noBtn.style.left = Math.random() * (box.clientWidth - noBtn.clientWidth) + "px";
+      noBtn.style.top = Math.random() * (box.clientHeight - noBtn.clientHeight) + "px";
+
+      if(chaseCount > 5) document.getElementById("hint").style.display = "block";
+
+      if(chaseCount > 9 && !forced){
+        forced = true;
+        setTimeout(yesClick, 500);
+      }
+    }
+
+    function yesClick() {
+      const box = document.getElementById("box");
+      box.innerHTML = `
+        <h2>🥰 ${herName}<br>You are my Valentine 💖</h2>
+        <p>More than the brightest stars ✨</p>
+      `;
+
+      const song = document.getElementById("song");
+
+      // Play music directly inside the click (required for mobile)
+      const playPromise = song.play();
+      if(playPromise !== undefined){
+        playPromise
+          .then(() => console.log("Music started"))
+          .catch(err => console.log("Music blocked:", err));
+      }
+
+      // Show hint after 3 seconds
+      setTimeout(() => {
+        document.getElementById("musicHint").style.display = "block";
+      }, 3000);
+    }
+
+    // Tap outside the box stops music
+    document.body.addEventListener("click", function(e){
+      const box = document.getElementById("box");
+      if(!box.contains(e.target)){
+        const song = document.getElementById("song");
+        song.pause();
+        song.currentTime = 0;
+      }
+    });
+  </script>
+</body>
+</html>
